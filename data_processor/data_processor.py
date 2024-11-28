@@ -8,7 +8,7 @@ __author__ = "Neil Tolentino"
 __version__ = "0.11.2024"
 
 class DataProcessor:
-    """Represents the financial transactions data,
+    """Represents and updates the account summary,
     suspicious transactions, and transaction statistics.
     """
 
@@ -24,7 +24,7 @@ class DataProcessor:
         """Initializes account transactions and statistics.
 
         Returns:
-            list: The account transactions and statistics.
+            list: list of account transactions to be processed.
         """
         self.__transactions = transactions
         self.__account_summaries = {}
@@ -42,7 +42,7 @@ class DataProcessor:
     
     @property
     def account_summaries(self) -> dict:
-        """Gets the account transaction summary.
+        """Gets the account summaries.
 
         Returns:
             dict: all account transaction summaries as a dictionary.
@@ -88,7 +88,8 @@ class DataProcessor:
         }
 
     def update_account_summary(self, transaction: dict) -> None:
-        """Updates or creates account transactions summary.
+        """Updates or creates account summary for the account
+        in the transaction.
 
         Args:
             transaction (dict): transaction to be processed.
@@ -100,6 +101,7 @@ class DataProcessor:
         transaction_type = transaction["Transaction type"]
         amount = float(transaction["Amount"])
 
+        # Create new account summary entry if it's a new account number.
         if account_number not in self.__account_summaries:
             self.__account_summaries[account_number] = {
                 "account_number": account_number,
@@ -108,6 +110,7 @@ class DataProcessor:
                 "total_withdrawals": 0
             }
 
+        # Update account summary depending on what the transaction type is.
         if transaction_type == "deposit":
             self.__account_summaries[account_number]["balance"] += amount
             self.__account_summaries[account_number]["total_deposits"] += amount
@@ -138,12 +141,14 @@ class DataProcessor:
         transaction_type = transaction["Transaction type"]
         amount = float(transaction["Amount"])
 
+        # If transaction type doesn't exist yet, create it.
         if transaction_type not in self.__transaction_statistics:
             self.__transaction_statistics[transaction_type] = {
                 "total_amount": 0,
                 "transaction_count": 0
             }
 
+        # Accumulate statistics
         self.__transaction_statistics[transaction_type]["total_amount"] += amount
         self.__transaction_statistics[transaction_type]["transaction_count"] += 1
 
