@@ -23,6 +23,9 @@ class DataProcessor:
     def __init__(self, transactions: list):
         """Initializes account transactions and statistics.
 
+        Args:
+            transactions (list): A list of transactions and statistics.
+
         Returns:
             list: list of account transactions to be processed.
         """
