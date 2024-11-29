@@ -16,9 +16,6 @@ class InputHandler:
         Args:
             file_path (str): The file path of the input data file that 
                              will be read.
-        
-        Raises:
-            FileNotFoundError: Raised when the file_path does not exist.
         """
         self.__file_path = file_path
 
