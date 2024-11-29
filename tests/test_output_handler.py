@@ -1,12 +1,7 @@
-"""
-Description: A script that defines and runs tests by using the
-unittest framework for testing the properties and methods of
-the OutputHandler class.
-Author: Alyssa Urquiola
-Date: 2024-11-22
-Usage: To run the tests for the OutputHandler class and execute
-the script from the command line using python test_output_handler.py
-"""
+"""This module defines the tests for the OutputHandler class."""
+
+__author__ = "Alyssa Urquiola"
+__version__ = "0.11.24"
 
 from unittest import TestCase, main
 from output_handler.output_handler import OutputHandler
@@ -128,7 +123,7 @@ class TestOutputHandler(TestCase):
             self.assertEqual(mock_file_handle.write.call_count,
                              len(expected_file_content))
 
-    def test_write_suspicious_transaistions_to_csv(self):
+    def test_write_suspicious_transactions_to_csv(self):
 
         # Arrange
         file_path = "output_data_suspicious_transactions.csv"

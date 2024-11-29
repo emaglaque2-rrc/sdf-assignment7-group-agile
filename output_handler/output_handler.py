@@ -1,12 +1,7 @@
-"""
-Description: A script for handling and importing output data in CSV format.
-This class provides reports for account summaries, suspicious transactions,
-and transaction statisctics.
-Author: Alyssa Urquiola
-Date: November 22, 2024
-Usage: To create an OutputHandler instance that matches the required data
-(account summaries, suspicious transactions, and transaction statistics).
-"""
+"""This module defines the OutputHandler class."""
+
+__author__ = "Alyssa Urquiola"
+__version__ = "0.11.24"
 
 import csv
 
