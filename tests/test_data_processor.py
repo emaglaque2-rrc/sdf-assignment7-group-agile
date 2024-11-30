@@ -12,16 +12,7 @@ class TestDataProcessor(TestCase):
     """Defines the unit tests for the DataProcessor class."""
 
     def setUp(self):
-        """This function is invoked before executing a unit test
-        function.
-
-        The following class attribute has been provided to reduce the 
-        amount of code needed when creating DataProcessor class objects 
-        in the tests that follow.
         
-        Example:
-            >>> data_processor = DataProcessor(self.transactions)
-        """
         self.account1_deposit_transaction1 = {
             "Transaction ID": "1",
             "Account number": "1001",
@@ -31,7 +22,6 @@ class TestDataProcessor(TestCase):
             "Currency": "CAD",
             "Description": "Salary"
         }
-
         self.account2_deposit_transaction1 = {
             "Transaction ID": "2",
             "Account number": "1002",
@@ -41,7 +31,7 @@ class TestDataProcessor(TestCase):
             "Currency": "CAD",
             "Description": "Salary"
         }
-
+        
         self.account1_withdraw_transaction1 = {
             "Transaction ID": "3",
             "Account number": "1001",

@@ -21,14 +21,12 @@ class DataProcessor:
     """
 
     def __init__(self, transactions: list):
-        """Initializes account transactions and statistics.
+        """A constructor for DataProcessor class.
 
         Args:
-            transactions (list): A list of transactions and statistics.
-
-        Returns:
-            list: list of account transactions to be processed.
+            transactions (list): A list of transactions to be processed.
         """
+
         self.__transactions = transactions
         self.__account_summaries = {}
         self.__suspicious_transactions = []
@@ -40,7 +38,8 @@ class DataProcessor:
 
         Returns:
             list: The list of transactions passed into the constructor.
-            """
+        """
+        
         return self.__transactions
     
     @property
