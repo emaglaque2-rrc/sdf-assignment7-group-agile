@@ -16,6 +16,9 @@ class InputHandler:
         Args:
             file_path (str): The file path of the input data file that 
                              will be read.
+        
+        Raises:
+            FileNotFoundError: Raised when the file_path does not exist.
         """
         self.__file_path = file_path
 
@@ -41,6 +44,9 @@ class InputHandler:
 
         Returns:
             list: The input data as a list.
+
+        Raises: 
+            FileNotFoundError: Raised when the file_path does not exist.
         """
         # Initialize an empty list to store transactions.
         transactions = []

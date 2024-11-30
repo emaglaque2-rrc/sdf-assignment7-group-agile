@@ -22,8 +22,7 @@ class InputHandlerTests(TestCase):
             + "2,1002,2023-03-01,deposit,1500,CAD,Salary\n"
             + "3,1001,2023-03-02,withdrawal,200,CAD,Groceries")
         
-        # Imitates the self.FILE_CONTENTS sample, but in json format for sample data
-        # for unit tests. Gets rid of file content/system dependency of the unit test.
+        # Mocked JSON data for unit tests to avoid file dependencies.
         self.MOCKED_JSON_CONTENTS = '''
         [
             {
@@ -51,7 +50,8 @@ class InputHandlerTests(TestCase):
 
     def test_get_file_format_returns_file_extension_of_file_path(self):
         # Arrange
-        test_file = InputHandler("example.csv")
+        file_path = "example.csv"
+        test_file = InputHandler(file_path)
 
         # Act
         actual = test_file.get_file_format()
@@ -62,9 +62,10 @@ class InputHandlerTests(TestCase):
 
     ### read_csv_data() Tests
 
-    def test_read_csv_data_raises_FileNotFoundError_when_file_path_invalid(self):
+    def test_read_csv_data_raises_FileNotFoundError_when_file_path_is_invalid(self):
         # Arrange
-        test_file = InputHandler("test.test")
+        file_path = "test.test"
+        test_file = InputHandler(file_path)
 
         # Act
         with self.assertRaises(FileNotFoundError) as context:
@@ -77,18 +78,17 @@ class InputHandlerTests(TestCase):
 
     def test_read_csv_data_returns_list_containing_transaction_data_from_csv_file(self):
         # Arrange
-        # Placeholder, won't actually be read and so it doesn't raise exception.
-        input_handler = InputHandler("input/input_data.csv")
+        # Placeholder - it won't be read. Used so it doesn't raise an exception.
+        file_path = "input/input_data.csv"
+        input_handler = InputHandler(file_path)
 
         # Act
         # Mocks the open() function, and reads the self.FILE_CONTENTS
-        # Patch used to not raise exception and for it to have less dependencies.
-        with \
-        patch("os.path.isfile", return_value=True), \
-        patch("builtins.open", mock_open(read_data = self.FILE_CONTENTS)):          
+        with patch("builtins.open", mock_open(read_data = self.FILE_CONTENTS)):          
             actual_list = input_handler.read_csv_data()
 
         # Assert
+        # Dynamically construct expected_list based on mocked file contents
         expected_list = [
             {
                 "Transaction ID": row["Transaction ID"],
@@ -99,7 +99,7 @@ class InputHandlerTests(TestCase):
                 "Currency": row["Currency"],
                 "Description": row["Description"]
             }
-            # DictReader used so no hard-coding; it's more scalable and less error-prone.
+
             for row in DictReader(self.FILE_CONTENTS.splitlines())
         ]
 
@@ -109,16 +109,16 @@ class InputHandlerTests(TestCase):
 
     def test_read_input_data_returns_list_containing_transaction_data_from_csv_file(self):
         # Arrange
-        input_handler = InputHandler("input/input_data.csv")
+        file_path = "input/input_data.csv"
+        input_handler = InputHandler(file_path)
 
         # Act
-        # Patch used to not raise exception and for it to have less dependencies.
-        with \
-        patch("os.path.isfile", return_value=True), \
-        patch("builtins.open", mock_open(read_data = self.FILE_CONTENTS)):
+        # Mocks the open() function, and reads the self.FILE_CONTENTS
+        with patch("builtins.open", mock_open(read_data = self.FILE_CONTENTS)):
             actual_list = input_handler.read_input_data()
 
         # Assert
+        # Dynamically construct expected_list based on mocked file contents
         expected_list = [
             {
                 "Transaction ID": row["Transaction ID"],
@@ -129,6 +129,7 @@ class InputHandlerTests(TestCase):
                 "Currency": row["Currency"],
                 "Description": row["Description"]
             }
+
             for row in DictReader(self.FILE_CONTENTS.splitlines())
         ]
 
@@ -136,19 +137,20 @@ class InputHandlerTests(TestCase):
 
     def test_read_input_data_returns_list_containing_transaction_data_from_json_file(self):
         # Arrange
-        input_handler = InputHandler("input/input_data.json")
-        # Loads function parses the mocked json content in setUp into a python 
-        # list which I can utilize to dynamically construct expected_list.
+        file_path = "input/input_data.json"
+        input_handler = InputHandler(file_path)
+
+        # Parses the mocked json content in setUp into a python 
+        # list which can be utilized to dynamically construct expected_list.
         mocked_file_contents = loads(self.MOCKED_JSON_CONTENTS)
 
         # Act
-        # Patch used to not raise exception and for it to have less dependencies.
-        with \
-        patch("os.path.isfile", return_value=True), \
-        patch("builtins.open", mock_open(read_data = self.MOCKED_JSON_CONTENTS)):        
+        # Mocks the open() function, and reads the self.MOCKED_JSON_CONTENTS
+        with patch("builtins.open", mock_open(read_data = self.MOCKED_JSON_CONTENTS)):        
             actual_list = input_handler.read_input_data()
 
         # Assert
+        # Dynamically construct expected_list based on mocked file contents
         expected_list = [
             {
                 "Transaction ID": item["Transaction ID"],
@@ -159,8 +161,7 @@ class InputHandlerTests(TestCase):
                 "Currency": item["Currency"],
                 "Description": item["Description"]
             }
-            # This is dynamically structured so I don't have to hard-code every
-            # data for comparison, more scalable and less error-prone.
+
             for item in mocked_file_contents
         ]
 
@@ -168,16 +169,20 @@ class InputHandlerTests(TestCase):
         
     def test_read_input_data_returns_empty_list_if_file_is_not_csv_or_json(self):
         # Arrange
-        input_handler = InputHandler("unsupported_file.gojetsgo")
+        file_path = "unsupported_file.gojetsgo"
+        input_handler = InputHandler(file_path)
 
         # Act
-        # Patch used to not raise exception and for it to have less dependencies.
-        with patch("os.path.isfile", return_value = True):
+        # Patch used to simulate unsupported file format scenario.
+        with patch(
+            "input_handler.input_handler.InputHandler.get_file_format",
+            return_value = "gojetsgo"
+        ):
             actual_list = input_handler.read_input_data()
 
         # Assert
         expected_list = []
-        self.assertEqual(expected_list, actual_list)
+        self.assertListEqual(expected_list, actual_list)
 
 if __name__ == "__main__":
     unittest.main()
