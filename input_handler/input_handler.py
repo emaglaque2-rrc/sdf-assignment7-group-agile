@@ -72,7 +72,7 @@ class InputHandler:
         Raises:
             FileNotFoundError: Raised when the file_path does not exist.
         """
-        # Checks if the file exists at the given path
+        # Checks if the file exists at the given path.
         if not path.isfile(self.__file_path):
             raise FileNotFoundError(f"File: {self.__file_path} does not exist.")
 
