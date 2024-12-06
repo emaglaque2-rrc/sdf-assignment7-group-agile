@@ -181,7 +181,7 @@ class OutputHandler:
 
         Args:
             filter_field (str): One of the following filter fields:
-            "balance","total_deposits" or "total_withdrawals".
+            "balance", "total_deposits" or "total_withdrawals".
             filter_value (int): An integer value to which the filter
             field will be compared.
             filter_mode (bool): The mode to filter:
