@@ -173,7 +173,7 @@ class OutputHandler:
                     statistic["transaction_count"]
                 ])
 
-    # Add Filtering Output Data
+    # Add Filtering Output Data.
     def filter_account_summaries(self, filter_field: str, filter_value: int,
                                  filter_mode: bool) -> dict:
         """Filtering method for account summaries data based on the
@@ -200,7 +200,7 @@ class OutputHandler:
         for account_number, summary in self.__account_summaries.items():
             account_value = summary.get(filter_field)
 
-            # Apply filtering logic based on filter_mode
+            # Apply filtering logic based on filter_mode.
             if filter_mode:
                 if account_value >= filter_value:
                     filtered_summaries[account_number] = summary
@@ -219,25 +219,25 @@ class OutputHandler:
             file_path (str): A path to the CSV file for the filtered
             account summaries.
         """
-        # Checks filtered_data if a dictionary
+        # Checks filtered_data if a dictionary.
         if not isinstance(filtered_data, dict):
             print("Error: filtered_data is not a dictionary.")
             return
         
         # Checks if file_path is a StringIO (in-memory file) or a
-        # string (file path)
+        # string (file path).
         if isinstance(file_path, StringIO):
             file = file_path
             writer = csv.DictWriter(file, fieldnames=
                                     ["Account number","Balance",
                                     "Total Deposits", "Total Withdrawals"])
         else:
-            # Ensures the directory exists
+            # Ensures the directory exists.
             output_dir = os.path.dirname(file_path)
             if output_dir and not os.path.exists(output_dir):
                 os.makedirs(output_dir)
 
-            # Open the file for writing
+            # Open the file for writing.
             with open(file_path, "w", newline="") as file:
                 writer = csv.DictWriter(file, fieldnames=
                                         ["Account number", "Balance",
@@ -245,7 +245,7 @@ class OutputHandler:
            
         writer.writeheader()
 
-        # Write each filtered account summary as a row
+        # Write each filtered account summary as a row.
         for account, data in filtered_data.items():
             writer.writerow({
                 "Account number": "account number",
@@ -263,7 +263,7 @@ class OutputHandler:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        # Set up OutputHandler instance with the account summaries data
+        # Set up OutputHandler instance with the account summaries data.
         handler = OutputHandler(
             account_summaries={
                 "1001": {"account_number": "1001", "balance": 550,
@@ -297,11 +297,11 @@ class OutputHandler:
             filtered_filename = f"{output_dir}/fdp_filter_team_{7}.csv"
 
             # Calls the filter_account_summaries method with appropriate
-            # parameters
+            # parameters.
             filtered_data = handler.filter_account_summaries("balance", 1000, True)
 
             # Calls the write_filtered_summaries_to_csv with the list
-            # returned from the filter_account_summaries method
+            # returned from the filter_account_summaries method.
             if filtered_data:
                 with open(filtered_filename, "w", newline="") as file:
                     handler.write_filtered_summaries_to_csv(filtered_data, file)
