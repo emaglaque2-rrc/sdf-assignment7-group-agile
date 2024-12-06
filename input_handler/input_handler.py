@@ -16,9 +16,6 @@ class InputHandler:
         Args:
             file_path (str): The file path of the input data file that 
                              will be read.
-        
-        Raises:
-            FileNotFoundError: Raised when the file_path does not exist.
         """
         self.__file_path = file_path
 
@@ -47,6 +44,10 @@ class InputHandler:
 
         Raises: 
             FileNotFoundError: Raised when the file_path does not exist.
+            ValueError: Raised when "Amount" value cannot be parsed 
+                        into a float.
+            KeyError: Raised when "Transaction type" and "Amount"
+                      is missing a value.
         """
         # Initialize an empty list to store transactions.
         transactions = []
@@ -59,7 +60,8 @@ class InputHandler:
         elif file_format == "json":
             transactions = self.read_json_data()
 
-        return transactions
+        # Invokes data_validation method to validate data before returning it.
+        return self.data_validation(transactions)
 
     def read_csv_data(self) -> list:
         """Reads input data from a csv file.
@@ -105,3 +107,45 @@ class InputHandler:
             transactions = json.load(input_file)
 
         return transactions
+    
+    def data_validation(self, transactions: list) -> list:
+        """Validates data and returns a new list only containing
+        valid transactions.
+        
+        Args:
+            transactions (list): A list of dictionaries containing
+                                 transaction data.
+        
+        Returns:
+            list: A list of dictionaries containing only
+                  valid transactions.
+        
+        Raises:
+            ValueError: Raised when "Amount" cannot be parsed 
+                        into a float.
+            KeyError: Raised when "Transaction type" and "Amount"
+                      is missing a value.
+        """
+        valid_transactions = []
+        VALID_TRANSACTION_TYPES = ("deposit", "withdrawal", "transfer")
+
+        for transaction in transactions:
+            is_valid = True # Resets boolean flag for each iteration.
+
+            try:
+                # Extracts the amount value and attempt to parse it as a float value.
+                amount = float(transaction["Amount"])
+                transaction_type = transaction["Transaction type"]
+            except (ValueError, KeyError):
+                # If an exception occurs (invalid/missing values), mark as invalid.
+                is_valid = False
+
+            # Check if amount is non-negative and transaction type is valid.
+            else:
+                is_valid = amount > 0 and transaction_type in VALID_TRANSACTION_TYPES
+
+            # If the transaction is valid, add it to the list of valid transactions.
+            if is_valid:
+                valid_transactions.append(transaction)
+        
+        return valid_transactions

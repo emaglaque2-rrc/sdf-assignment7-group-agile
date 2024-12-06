@@ -183,6 +183,83 @@ class InputHandlerTests(TestCase):
         # Assert
         expected_list = []
         self.assertListEqual(expected_list, actual_list)
+    
+    ### data_validation(list) Tests
+
+    def test_data_validation_returns_list_that_excludes_records_with_amount_not_numeric(self):
+        # Arrange
+        # Placeholder - it won't be read. Used so it doesn't raise an exception.
+        input_handler = InputHandler("i_miss_damiens_inperson_classes.csv")
+
+        # Shortened the sample data for clarification and readability.
+        RECORDS_WITH_AMOUNT_NOT_NUMERIC = [
+            {"Transaction type": "deposit", "Amount": 999},
+            {"Transaction type": "deposit", "Amount": 69},
+            # Records with amount not numeric.
+            {"Transaction type": "deposit", "Amount": "gojetsgo"},
+            {"Transaction type": "deposit", "Amount": "damienhellebuyck"}
+        ]
+
+        # Act
+        actual_list = input_handler.data_validation(RECORDS_WITH_AMOUNT_NOT_NUMERIC)
+
+        # Assert
+        expected_list = [
+            {"Transaction type": "deposit", "Amount": 999},
+            {"Transaction type": "deposit", "Amount": 69},
+        ]
+
+        self.assertListEqual(expected_list, actual_list)
+
+    def test_data_validation_returns_list_that_excludes_records_with_amount_less_than_zero(self):
+        # Arrange
+        # Placeholder - it won't be read. Used so it doesn't raise an exception.
+        input_handler = InputHandler("i_hit_prs_because_of_sdf_stress.csv")
+
+        # Shortened the sample data for clarification and readability.
+        RECORDS_WITH_AMOUNT_LESS_THAN_ZERO = [
+            {"Transaction type": "deposit", "Amount": 777},
+            {"Transaction type": "deposit", "Amount": 999},
+            # Records with amount less than zero.
+            {"Transaction type": "deposit", "Amount": -6969},
+            {"Transaction type": "deposit", "Amount": -69}
+        ]
+        
+        # Act
+        actual_list = input_handler.data_validation(RECORDS_WITH_AMOUNT_LESS_THAN_ZERO)
+
+        # Assert
+        expected_list = [
+            {"Transaction type": "deposit", "Amount": 777},
+            {"Transaction type": "deposit", "Amount": 999},
+        ]
+
+        self.assertListEqual(expected_list, actual_list)
+
+    def test_data_validation_returns_list_that_excludes_records_with_invalid_transaction_type(self):
+        # Arrange
+        # Placeholder - it won't be read. Used so it doesn't raise an exception.
+        input_handler = InputHandler("have_a_good_rest_of_the_year.csv")
+
+        # Shortened the sample data for clarification and readability.
+        RECORDS_WITH_INVALID_TRANSACTION_TYPES = [
+            {"Transaction type": "deposit", "Amount": 444},
+            {"Transaction type": "deposit", "Amount": 999},
+            # Records with invalid transaction types.
+            {"Transaction type": "damiens_the_best", "Amount": 666},
+            {"Transaction type": "christmas_gift_pls", "Amount": 444}
+        ]
+        
+        # Act
+        actual_list = input_handler.data_validation(RECORDS_WITH_INVALID_TRANSACTION_TYPES)
+
+        # Assert
+        expected_list = [
+            {"Transaction type": "deposit", "Amount": 444},
+            {"Transaction type": "deposit", "Amount": 999},
+        ]
+
+        self.assertListEqual(expected_list, actual_list)
 
 if __name__ == "__main__":
     unittest.main()
