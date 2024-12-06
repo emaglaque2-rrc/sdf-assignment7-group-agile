@@ -3,6 +3,9 @@
 __author__ = "Alyssa Urquiola"
 __version__ = "0.11.24"
 
+import csv
+from io import StringIO
+import os
 from unittest import TestCase, main
 from output_handler.output_handler import OutputHandler
 from unittest.mock import patch, mock_open, call
@@ -59,6 +62,20 @@ class TestOutputHandler(TestCase):
             self.transaction_statistics
         )
 
+        # Set up OutputHandler instance for filter methods
+        self.output_handler = OutputHandler(
+            account_summaries={
+                "1001": {"account_number": "1001", "balance": 550,
+                         "total_deposits": 1000, "total_withdrawals": 450},
+                '1002': {'account_number': '1002', 'balance': 1400,
+                         'total_deposits': 300, 'total_withdrawals': 1700},
+                '1003': {'account_number': '1003', 'balance': 7950,
+                         'total_deposits': 7950, 'total_withdrawals': 0}
+            },
+            suspicious_transactions=[],
+            transaction_statistics={}
+        )
+
     def test_initialization(self):
         # Arrange
         account_summaries = self.account_summaries
@@ -113,7 +130,8 @@ class TestOutputHandler(TestCase):
             # Get the mock file handle and check write calls
             mock_file_handle = mocked_open()
         
-            # Check that the content written to the file matches expected values
+            # Check that the content written to the file matches
+            # expected values
             mock_file_handle.write.assert_any_call
             ("Account number,Balance,Total Deposits,Total Withdrawals\r\n")
             mock_file_handle.write.assert_any_call("1001,50,100,50\r\n")
@@ -139,7 +157,8 @@ class TestOutputHandler(TestCase):
             # Assert correct file path and mode
             mocked_open.assert_called_once_with(file_path, "w", newline="")
 
-            # Checks that the content written to the file matches expected values
+            # Checks that the content written to the file matches
+            # expected values
             mock_file_handle = mocked_open()
             mock_file_handle.write.assert_any_call
             ("Transaction ID,Account number,Date,Transaction type,Amount,Currency,Description\r\n")
@@ -181,6 +200,55 @@ class TestOutputHandler(TestCase):
             for expected_content in expected_file_content:
                 self.assertIn(expected_content, written_content)
 
+    def test_filter_account_summaries_true(self):
+        # Arrange
+        filter_value = 100
+        filter_mode = True
+        expected_filtered_summaries = self.account_summaries
+
+        # Act
+        # Returns a list of filtered account summaries as True
+        filtered_summaries = self.handler.account_summaries
+        
+        # Assert
+        self.assertEqual(filtered_summaries, expected_filtered_summaries)
+
+    def test_filter_account_summaries_false(self):
+        # Arrange
+        filter_value = 300 # Assumed value not in the account_summaries
+        filter_mode = False
+        expected_filtered_summaries = self.account_summaries
+
+        # Act
+        # Returns a list of filtered account summaries as False
+        filtered_summaries = self.handler.account_summaries
+
+        # Assert
+        self.assertEqual(filtered_summaries, expected_filtered_summaries)
+
+    def test_write_filtered_summaries_to_csv(self):
+        # Arrange
+        filter_value = 1000
+        filter_mode = True
+        filtered = self.output_handler.filter_account_summaries("balance", 1000, True)
+        output = StringIO()
+
+        # Act
+        # Calls write_filtered_summaries_to_csv to write the filtered
+        # data to CSV format
+        self.output_handler.write_filtered_summaries_to_csv(filtered, output)
+
+        # Represents StringIO object to read the content
+        output.seek(0)
+
+        # Parses the content to a list of dictionaries
+        reader = csv.DictReader(output)
+
+        # Represents the expected number of rows
+        rows = list(reader)
+
+        # Assert
+        self.assertEqual(len(rows), 2)
+   
 if __name__ == "__main__":
     main()
-    
