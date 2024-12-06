@@ -29,3 +29,9 @@ Transaction ID,Account number,Date,Transaction type,Amount,Currency,Description
 28,1006,2023-03-14,deposit,1520,LTC,Crypto Investment
 29,1007,2023-03-01,deposit,100,CAD,Salary
 30,1003,2023-03-01,deposit,150,CAD,Salary
+31,1003,2023-03-01,deposit,-100000000000000000,CAD,Salary
+32,1003,2023-03-01,deposit,-99999999999999999999,CAD,Salary
+33,1003,2023-03-01,deposit,damien_hellebuyck,CAD,Salary
+34,1003,2023-03-01,deposit,oilers_suck,CAD,Salary
+35,1003,2023-03-01,christmas_gift_pls,150,CAD,Salary
+36,1003,2023-03-01,damiens_truck_still_in_the_shop,150,CAD,Salary
