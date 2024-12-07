@@ -15,12 +15,10 @@ class DataProcessor:
     """
 
     LARGE_TRANSACTION_THRESHOLD = 10000
-    """A constant that sets the maximum transaction amount.
-    """
+    """A constant that sets the maximum transaction amount."""
 
     UNCOMMON_CURRENCIES = ["XRP", "LTC"]
-    """A constant that checks transactions with uncommon currencies.
-    """
+    """A constant that checks transactions with uncommon currencies."""
 
     def __init__(self, transactions: list, logging_level: str = "WARNING",
                  logging_format: str = "%(asctime)s - %(levelname)s - %(message)s",
