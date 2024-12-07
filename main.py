@@ -1,9 +1,13 @@
-"""REQUIRED MODULE DOCUMENTATION
+"""This script is the main function that handles reading and validating
+through input handler and exporting processed data to appropriate output
+files. It includes data processing for account summaries and 
+transactions while implementing configurable logging mechanism.
 """
 
-__author__ = ""
-__version__ = ""
+__author__ = "Neil Tolentino"
+__version__ = "06.12.2024"
 
+import logging
 from os import path
 from input_handler.input_handler import InputHandler
 from data_processor.data_processor import DataProcessor
@@ -29,7 +33,10 @@ def main() -> None:
     input_handler = InputHandler(input_file_path)
     transactions = input_handler.read_input_data()
 
-    data_processor = DataProcessor(transactions)
+    # Instantiates DataProcessor with logging specified.
+    data_processor = DataProcessor(transactions, 
+                                   logging_level="INFO",
+                                   log_file="fdp_team_7.log")
     processed_data = data_processor.process_data()
 
 

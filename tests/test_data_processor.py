@@ -2,8 +2,9 @@
 """
 
 __author__ = "Neil Tolentino"
-__version__ = "0.11.2024"
+__version__ = "06.12.2024"
 
+import logging
 import unittest
 from unittest import TestCase
 from data_processor.data_processor import DataProcessor
@@ -230,6 +231,23 @@ class TestDataProcessor(TestCase):
         self.assertEqual(len(result), expected_number_of_entries)
         # The entry should be expected dict entry
         self.assertEqual(result[transaction_type], expected_entry)
+
+    def test_update_account_summary_emits_info_log(self):
+        """Test that the update_account_summary method logs an 
+        info message.
+        """
+        # Arrange
+        data_processor = DataProcessor([])    
+        deposit_transaction = self.account1_deposit_transaction1                
+
+        # Act and Assert
+        with self.assertLogs(data_processor.logger, level="INFO") as context_manager:
+            data_processor.update_account_summary(deposit_transaction)
+            # Check if an info message was logged
+            self.assertEqual(len(context_manager.records), 1)
+            self.assertEqual(context_manager.records[0].getMessage(), 
+                             "Account summary updated: 1001")
+            self.assertEqual(context_manager.records[0].levelno, logging.INFO)
 
 if __name__ == "__main__":
     unittest.main()
